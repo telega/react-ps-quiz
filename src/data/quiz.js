@@ -21,6 +21,17 @@ export const quizJSON = {
             ],
             "correct": "<p><span>That's right!</span> The letter A is the first letter in the alphabet!</p>",
             "incorrect": "<p><span>Uhh no.</span> It's the first letter of the alphabet. Did you actually <em>go</em> to kindergarden?</p>" // no comma here
+		},
+		{ // Question 2 - Multiple Choice, Single True Answer
+            "q": "2 What number is the letter A in the English alphabet?",
+            "a": [
+                {"option": "8",      "correct": false},
+                {"option": "14",     "correct": false},
+                {"option": "1",      "correct": true},
+                {"option": "23",     "correct": false} // no comma here
+            ],
+            "correct": "<p><span>That's right!</span> The letter A is the first letter in the alphabet!</p>",
+            "incorrect": "<p><span>Uhh no.</span> It's the first letter of the alphabet. Did you actually <em>go</em> to kindergarden?</p>" // no comma here
 		}
 	]
 }	
