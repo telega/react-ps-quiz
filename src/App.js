@@ -6,7 +6,7 @@ import Quiz from './components/Quiz'
 class App extends Component {
   render() {
     return (
-      <Quiz quizJSON = {quizJSON} />
+      <Quiz quizJSON = {quizJSON}/>
     );
   }
 }

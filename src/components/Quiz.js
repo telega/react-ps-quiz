@@ -1,5 +1,6 @@
 import React from 'react';
 import Question from './Question';
+import Results from './Results';
 
 class QuizHeader extends React.Component{
 	render(){
@@ -11,22 +12,6 @@ class QuizHeader extends React.Component{
 		)
 	}
 }
-
-class ResultsCard extends React.Component{
-	render(){
-		if(this.props.show){
-			return(
-				<div>
-				<h2>Results</h2>
-				<p>You scored: {this.props.score} out of {this.props.questionCount} </p>
-				</div>
-			)
-		}
-	
-		return null
-	}
-}
-
 
 class StartButton extends React.Component{
 	render(){
@@ -81,8 +66,13 @@ export default class Quiz extends React.Component{
 		}
 	}
 
-	nextQuestion(){
-		
+	showResults(){
+
+
+
+	}
+
+	nextQuestion(){	
 		this.setState({currentQuestion: this.state.currentQuestion+1}, ()=>{
 			if(this.state.currentQuestion === this.state.questionCount){
 				this.setState({quizCompleted: true})
@@ -91,16 +81,54 @@ export default class Quiz extends React.Component{
 	}
 
 	render(){
-		console.log(this.state)
 		return(
 			<div id="slickQuiz">
 				<QuizHeader quizStarted = {this.state.quizStarted} name={this.props.quizJSON.info.name} main={this.props.quizJSON.info.main} />
 				<div className = "quizArea">
 				<StartButton show={!this.state.quizStarted} handleClick = {this.startQuiz} />
 				{this.state.quizStarted ? this.renderQuestions() : null}
-				<ResultsCard show={this.state.quizCompleted} score = {this.state.quizScore} questionCount = {this.state.questionCount} />
+				<Results show={this.state.quizCompleted} score = {this.state.quizScore} questionCount = {this.state.questionCount} />
 				</div>
 			</div>
 		)
+	}
+}
+
+Quiz.defaultProps = {
+	checkAnswerText:  'Check My Answer!',
+	nextQuestionText: 'Next &raquo;',
+	backButtonText: '',
+	completeQuizText: '',
+	tryAgainText: '',
+	questionCountText: 'Question %current of %total',
+	preventUnansweredText: 'You must select at least one answer.',
+	questionTemplateText:  '%count. %text',
+	scoreTemplateText: '%score / %total',
+	nameTemplateText:  '<span>Quiz: </span>%name',
+	skipStartButton: false,
+	numberOfQuestions: null,
+	randomSortQuestions: false,
+	randomSortAnswers: false,
+	preventUnanswered: false,
+	disableScore: false,
+	disableRanking: false,
+	scoreAsPercentage: false,
+	perQuestionResponseMessaging: true,
+	perQuestionResponseAnswers: false,
+	completionResponseMessaging: false,
+	displayQuestionCount: true,   // Deprecate?
+	displayQuestionNumber: true,  // Deprecate?
+	animationCallbacks: { // only for the methods that have jQuery animations offering callback
+		setupQuiz: function () {},
+		startQuiz: function () {},
+		resetQuiz: function () {},
+		checkAnswer: function () {},
+		nextQuestion: function () {},
+		backToQuestion: function () {},
+		completeQuiz: function () {}
+	},
+	events: {
+		onStartQuiz: function (options) {},
+		onCompleteQuiz: function (options) {}  // reserved: options.questionCount, options.score
 	}
 }

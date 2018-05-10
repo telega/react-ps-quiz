@@ -1,6 +1,21 @@
 import React from 'react';
 import _ from 'lodash';
 
+class AnswerCardButton extends React.Component{
+
+	render(){
+		if(this.props.showResults){
+			return(
+				<button className= "button" onClick = {this.props.onClick}>Show Results</button>
+			)
+		}
+
+		return(
+			<button className= "button" onClick = {this.props.onClick} >Next Question </button>
+		)	
+	}
+}
+
 class AnswerCard extends React.Component{
 
 	render(){
@@ -9,14 +24,14 @@ class AnswerCard extends React.Component{
 				return(
 					<div>
 						<div dangerouslySetInnerHTML={{__html:this.props.question.correct}} />
-						<button onClick = {this.props.nextQuestion} >Next Question</button>
+						<AnswerCardButton onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount) } />
 					</div>
 				)
 			}
 			return (
 				<div>	
-				<div dangerouslySetInnerHTML={{__html:this.props.question.incorrect}} />
-				<button onClick = {this.props.nextQuestion } >Next Question</button>
+					<div dangerouslySetInnerHTML={{__html:this.props.question.incorrect}} />
+					<AnswerCardButton onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount)} />
 				</div>
 			)
 		}
