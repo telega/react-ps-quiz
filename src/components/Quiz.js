@@ -1,6 +1,7 @@
 import React from 'react';
 import Question from './Question';
 import Results from './Results';
+import _ from 'lodash';
 
 class QuizHeader extends React.Component{
 	render(){
@@ -31,12 +32,14 @@ export default class Quiz extends React.Component{
 		this.renderQuestions = this.renderQuestions.bind(this);
 		this.nextQuestion = this.nextQuestion.bind(this);
 		this.updateScore = this.updateScore.bind(this);
+		this.updateScoreBucket = this.updateScoreBucket.bind(this);
 
 		this.state = {
 			quizStarted: false,
 			quizCompleted: false,
 			currentQuestion: 0,
 			quizScore: 0,
+			quizScoreBucket:[],
 			questions: this.props.quizJSON.questions || [], 
 			questionCount: this.props.quizJSON.questions.length || 0
 		}
@@ -46,18 +49,23 @@ export default class Quiz extends React.Component{
 		return(
 			this.state.questions.map((question,i)=>{
 				return <Question 
+							{...this.props}
 							question={question} 
 							key={i} i={i} 
 							currentQuestion = {this.state.currentQuestion} 
 							questionCount = {this.state.questionCount} 
 							nextQuestion = {this.nextQuestion}
-							updateScore = {this.updateScore} />
+							updateScore = {this.updateScore}
+							updateScoreBucket = {this.updateScoreBucket}
+							 />
 			})
 		)
 	}
 
 	startQuiz(){
-		this.setState({quizStarted:true})
+		this.setState({quizStarted:true}, ()=>{
+			this.props.events.onStartQuiz({options:{}})
+		})
 	}
 
 	updateScore(correct){
@@ -66,16 +74,36 @@ export default class Quiz extends React.Component{
 		}
 	}
 
-	showResults(){
+	updateScoreBucket(item){
+		let bucketIndex = _.findIndex(this.state.quizScoreBucket, {choice:item});
+		if( bucketIndex === -1 ){
+			this.setState(prevState => ({
+				quizScoreBucket: [...prevState.quizScoreBucket, {choice:item, value: 1}]
+			  }))
+		} else{
+			let bucket = this.state.quizScoreBucket[bucketIndex];
+			let quizScoreBucket = this.state.quizScoreBucket;
+			bucket.value = bucket.value+1;
+			quizScoreBucket[bucketIndex] = bucket;
 
-
+			this.setState(prevState => ({
+				quizScoreBucket: quizScoreBucket
+			  }))
+		}
 
 	}
 
 	nextQuestion(){	
 		this.setState({currentQuestion: this.state.currentQuestion+1}, ()=>{
 			if(this.state.currentQuestion === this.state.questionCount){
-				this.setState({quizCompleted: true})
+				this.setState({quizCompleted: true}, ()=>{
+					this.props.events.onCompleteQuiz({
+						options:{
+							score:this.state.quizScore,
+							questionCount:this.state.questionCount
+						}
+					});
+				})
 			}
 		})
 	}
@@ -87,7 +115,7 @@ export default class Quiz extends React.Component{
 				<div className = "quizArea">
 				<StartButton show={!this.state.quizStarted} handleClick = {this.startQuiz} />
 				{this.state.quizStarted ? this.renderQuestions() : null}
-				<Results show={this.state.quizCompleted} score = {this.state.quizScore} questionCount = {this.state.questionCount} />
+				<Results {...this.props} show={this.state.quizCompleted} score = {this.state.quizScore} buckets = {this.state.quizScoreBucket}  questionCount = {this.state.questionCount} />
 				</div>
 			</div>
 		)
@@ -97,36 +125,37 @@ export default class Quiz extends React.Component{
 Quiz.defaultProps = {
 	checkAnswerText:  'Check My Answer!',
 	nextQuestionText: 'Next &raquo;',
-	backButtonText: '',
-	completeQuizText: '',
-	tryAgainText: '',
-	questionCountText: 'Question %current of %total',
+	// backButtonText: '',
+	// completeQuizText: '',
+	// tryAgainText: '',
+	// questionCountText: 'Question %current of %total',
 	preventUnansweredText: 'You must select at least one answer.',
-	questionTemplateText:  '%count. %text',
-	scoreTemplateText: '%score / %total',
-	nameTemplateText:  '<span>Quiz: </span>%name',
-	skipStartButton: false,
-	numberOfQuestions: null,
-	randomSortQuestions: false,
-	randomSortAnswers: false,
+	// questionTemplateText:  '%count. %text',
+	// scoreTemplateText: '%score / %total',
+	// nameTemplateText:  '<span>Quiz: </span>%name',
+	// skipStartButton: false,
+	// numberOfQuestions: null,
+	// randomSortQuestions: false,
+	// randomSortAnswers: false,
 	preventUnanswered: false,
-	disableScore: false,
-	disableRanking: false,
-	scoreAsPercentage: false,
+	// disableScore: false,
+	// disableRanking: false,
+	// scoreAsPercentage: false,
 	perQuestionResponseMessaging: true,
-	perQuestionResponseAnswers: false,
-	completionResponseMessaging: false,
-	displayQuestionCount: true,   // Deprecate?
-	displayQuestionNumber: true,  // Deprecate?
-	animationCallbacks: { // only for the methods that have jQuery animations offering callback
-		setupQuiz: function () {},
-		startQuiz: function () {},
-		resetQuiz: function () {},
-		checkAnswer: function () {},
-		nextQuestion: function () {},
-		backToQuestion: function () {},
-		completeQuiz: function () {}
-	},
+	// perQuestionResponseAnswers: false,
+	// completionResponseMessaging: false,
+	// displayQuestionCount: true,   // Deprecate?
+	// displayQuestionNumber: true,  // Deprecate?
+	useScoreBuckets:true,
+	// animationCallbacks: { // only for the methods that have jQuery animations offering callback
+	// 	setupQuiz: function () {},
+	// 	startQuiz: function () {},
+	// 	resetQuiz: function () {},
+	// 	checkAnswer: function () {},
+	// 	nextQuestion: function () {},
+	// 	backToQuestion: function () {},
+	// 	completeQuiz: function () {}
+	// },
 	events: {
 		onStartQuiz: function (options) {},
 		onCompleteQuiz: function (options) {}  // reserved: options.questionCount, options.score

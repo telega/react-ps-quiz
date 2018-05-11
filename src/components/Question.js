@@ -11,7 +11,7 @@ class AnswerCardButton extends React.Component{
 		}
 
 		return(
-			<button className= "button" onClick = {this.props.onClick} >Next Question </button>
+			<button className= "button" onClick = {this.props.onClick} dangerouslySetInnerHTML={{__html:this.props.nextQuestionText}}/>
 		)	
 	}
 }
@@ -24,14 +24,14 @@ class AnswerCard extends React.Component{
 				return(
 					<div>
 						<div dangerouslySetInnerHTML={{__html:this.props.question.correct}} />
-						<AnswerCardButton onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount) } />
+						<AnswerCardButton nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount) } />
 					</div>
 				)
 			}
 			return (
 				<div>	
 					<div dangerouslySetInnerHTML={{__html:this.props.question.incorrect}} />
-					<AnswerCardButton onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount)} />
+					<AnswerCardButton nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount)} />
 				</div>
 			)
 		}
@@ -51,17 +51,29 @@ class QuestionCard extends React.Component{
 
 		this.state = {
 			selectedOption: null,
+			showPreventUnansweredText: false
 		}
 	}
 
 	handleOptionChange(e){
-		this.setState({selectedOption: e.target.value})
+		this.setState({selectedOption: e.target.value, showPreventUnansweredText:false})
 	}
 
 	checkAnswer(){
-		let correct = ( _.findIndex(this.props.question.a, { option: this.state.selectedOption, correct: true } ) !== -1 ) ? true : false;
-		this.props.updateScore(correct);
-		//this.props.nextQuestion();
+	
+		if(this.props.preventUnanswered && !this.state.selectedOption){
+			this.setState({showPreventUnansweredText:true})
+		} else {
+
+			if(this.props.useScoreBuckets){
+				let index =  _.findIndex(this.props.question.a, { option: this.state.selectedOption } );
+				this.props.updateScoreBucket(index);
+			} else {
+				let correct = ( _.findIndex(this.props.question.a, { option: this.state.selectedOption, correct: true } ) !== -1 ) ? true : false;
+				this.props.updateScore(correct);
+			}
+		}
+	
 	}
 
 	renderQuestionAnswers(){
@@ -90,7 +102,8 @@ class QuestionCard extends React.Component{
 							{this.renderQuestionAnswers()}
 						</form>
 					</div>
-					<button onClick = {this.checkAnswer}>Check Answer</button>
+					<p>{(this.state.showPreventUnansweredText) ? this.props.preventUnansweredText : null }</p>
+					<button onClick = {this.checkAnswer}>{this.props.checkAnswerText}</button>
 				</div>
 
 			)
@@ -103,7 +116,8 @@ export default class Question extends React.Component{
 	constructor(props){
 		super(props);
 
-		this.updateScore = this.updateScore.bind(this)
+		this.updateScore = this.updateScore.bind(this);
+		this.updateScoreBucket = this.updateScoreBucket.bind(this);
 		this.state = {
 			showAnswerCard:false,
 			isCorrect: false
@@ -111,18 +125,29 @@ export default class Question extends React.Component{
 	}
 
 	updateScore(correct){
-		this.setState({
-			isCorrect: correct,
-			showAnswerCard: true
-		});
 		this.props.updateScore(correct);
+
+		if(this.props.perQuestionResponseMessaging){
+			this.setState({
+				isCorrect: correct,
+				showAnswerCard: true
+			});
+		} else {
+			this.props.nextQuestion();
+		}
+	
 	}
+
+	updateScoreBucket(item){
+		this.props.updateScoreBucket(item);
+		this.props.nextQuestion();	
+	};
 
 	render(){
 		if(this.props.currentQuestion === this.props.i){
 			return(
 				<div>
-				<QuestionCard {...this.props} show={!this.state.showAnswerCard} updateScore = {this.updateScore} />
+				<QuestionCard {...this.props} show={!this.state.showAnswerCard} updateScore = {this.updateScore} updateScoreBucket = {this.updateScoreBucket} />
 				<AnswerCard {...this.props} show = {this.state.showAnswerCard} isCorrect = {this.state.isCorrect}/>
 				</div>
 			)
