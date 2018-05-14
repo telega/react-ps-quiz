@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Question from './Question';
 import Results from './Results';
 import _ from 'lodash';
+import freemail from 'freemail-webpack';
 
 class QuizHeader extends React.Component{
 	render(){
@@ -10,15 +11,18 @@ class QuizHeader extends React.Component{
 			<div className = "quizHeader">
 				<h1 className = "quizName">{this.props.name}</h1>
 				{!this.props.quizStarted ? <div dangerouslySetInnerHTML={{__html:this.props.main}} /> : null}
+				{!this.props.quizStarted && this.props.collectInfo ? <div dangerouslySetInnerHTML={{__html:this.props.collectInfoText}}/> :null }
+				{!this.props.quizStarted && this.props.collectInfo ? <form><input type='text'value={this.props.value} onChange = {this.props.handleInfoChange} ></input></form> : null }
 			</div>
 		);
 	}
 }
 
 class StartButton extends React.Component{
+	
 	render(){
 		if(this.props.show){
-			return (<button className = 'button startQuiz' onClick = {this.props.handleClick}>Get Started</button> );
+			return (<button disabled = {!this.props.active} className = 'button startQuiz' onClick = {this.props.handleClick}>Get Started</button> );				
 		}
 		return null;
 	}
@@ -34,17 +38,45 @@ export default class Quiz extends React.Component{
 		this.nextQuestion = this.nextQuestion.bind(this);
 		this.updateScore = this.updateScore.bind(this);
 		this.updateScoreBucket = this.updateScoreBucket.bind(this);
+		this.handleInfoChange = this.handleInfoChange.bind(this);
 
 		this.state = {
 			quizStarted: false,
 			quizCompleted: false,
 			currentQuestion: 0,
+			collectInfo: this.props.collectInfo,
+			collectedInfo: '',
+			startButtonActive: !this.props.collectInfo,
 			quizScore: 0,
 			quizScoreBucket:[],
 			questions: this.props.quizJSON.questions || [], 
 			questionCount: this.props.quizJSON.questions.length || 0
 		};
 	}
+
+	handleInfoChange(e){
+		this.setState({collectedInfo:e.target.value}, ()=>{
+			// block submission when using fremail providers.. 
+			if(this.props.validateCollectedInfo){
+				let re = /\S+@\S+\.\S+/;
+				if( re.test(this.state.collectedInfo) ){
+					if(!freemail.isFree(this.state.collectedInfo)){
+						this.setState({startButtonActive: true} ); 
+					}
+					else {
+						this.setState({startButtonActive: false});
+					}
+				} 
+				else {
+					this.setState({startButtonActive: false});
+				}
+			} else {
+				this.setState({startButtonActive: true});
+			}
+		});
+		
+	}
+
 
 	renderQuestions(){
 		return(
@@ -93,7 +125,6 @@ export default class Quiz extends React.Component{
 				quizScoreBucket: quizScoreBucket
 			}));
 		}
-
 	}
 
 	nextQuestion(){	
@@ -103,7 +134,8 @@ export default class Quiz extends React.Component{
 					this.props.events.onCompleteQuiz({
 						options:{
 							score:this.state.quizScore,
-							questionCount:this.state.questionCount
+							questionCount:this.state.questionCount,
+							collectedInfo:this.state.collectedInfo
 						}
 					});
 				});
@@ -114,9 +146,17 @@ export default class Quiz extends React.Component{
 	render(){
 		return(
 			<div id="slickQuiz">
-				<QuizHeader quizStarted = {this.state.quizStarted} name={this.props.quizJSON.info.name} main={this.props.quizJSON.info.main} />
+				<QuizHeader 
+					collectInfoText = {this.props.collectInfoText} 
+					collectInfo = {this.state.collectInfo} 
+					quizStarted = {this.state.quizStarted} 
+					name = {this.props.quizJSON.info.name}
+					handleInfoChange = {this.handleInfoChange}
+					value = {this.state.collectedInfo} 
+					main = {this.props.quizJSON.info.main} 
+				/>
 				<div className = "quizArea">
-					<StartButton show={!this.state.quizStarted} handleClick = {this.startQuiz} />
+					<StartButton active={this.state.startButtonActive} show={!this.state.quizStarted} handleClick = {this.startQuiz} />
 					{this.state.quizStarted ? this.renderQuestions() : null}
 					<Results {...this.props} show={this.state.quizCompleted} score = {this.state.quizScore} buckets = {this.state.quizScoreBucket}  questionCount = {this.state.questionCount} />
 				</div>
@@ -127,19 +167,27 @@ export default class Quiz extends React.Component{
 
 Quiz.propTypes= {
 	quizJSON: PropTypes.object,
-	events: PropTypes.object
+	events: PropTypes.object,
+	collectInfo: PropTypes.bool,
+	collectInfoText: PropTypes.string,
+	validateCollectedInfo: PropTypes.bool,
 };
 
 StartButton.propTypes = {
 	handleClick: PropTypes.func,
-	show: PropTypes.bool
+	show: PropTypes.bool,
+	startButtonActive: PropTypes.bool,
+	active:PropTypes.bool
 };
 
 QuizHeader.propTypes = {
 	name: PropTypes.string,
 	quizStarted: PropTypes.bool,
 	main: PropTypes.string,
-
+	collectInfo: PropTypes.bool,
+	collectInfoText: PropTypes.string,
+	value: PropTypes.string,
+	handleInfoChange: PropTypes.func
 };
 
 Quiz.defaultProps = {
@@ -166,7 +214,10 @@ Quiz.defaultProps = {
 	// completionResponseMessaging: false,
 	// displayQuestionCount: true,   // Deprecate?
 	// displayQuestionNumber: true,  // Deprecate?
-	useScoreBuckets:true,
+	useScoreBuckets: true,
+	collectInfo: true,
+	collectInfoText: '<p>Enter your Email address to get started.</p>',
+	validateCollectedInfo: true, // fremail validation...
 	// animationCallbacks: { // only for the methods that have jQuery animations offering callback
 	// 	setupQuiz: function () {},
 	// 	startQuiz: function () {},

@@ -2885,6 +2885,12 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
+freemail-webpack@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/freemail-webpack/-/freemail-webpack-1.0.0.tgz#a3899979359fd2bae929543663068c4c7007fd91"
+  dependencies:
+    tldjs "^1.5.2"
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
@@ -6626,6 +6632,12 @@ timers-browserify@^2.0.4:
   resolved "https://registry.yarnpkg.com/timers-browserify/-/timers-browserify-2.0.10.tgz#1d28e3d2aadf1d5a5996c4e9f95601cd053480ae"
   dependencies:
     setimmediate "^1.0.4"
+
+tldjs@^1.5.2:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/tldjs/-/tldjs-1.8.0.tgz#b9c16bd6de357b55ffcbe7d5be41f6b3ca76e3fa"
+  dependencies:
+    punycode "^1.4.1"
 
 tmp@^0.0.33:
   version "0.0.33"
