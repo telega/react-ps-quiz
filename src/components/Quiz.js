@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Question from './Question';
 import Results from './Results';
 import _ from 'lodash';
@@ -10,14 +11,14 @@ class QuizHeader extends React.Component{
 				<h1 className = "quizName">{this.props.name}</h1>
 				{!this.props.quizStarted ? <div dangerouslySetInnerHTML={{__html:this.props.main}} /> : null}
 			</div>
-		)
+		);
 	}
 }
 
 class StartButton extends React.Component{
 	render(){
 		if(this.props.show){
-			return (<button className = 'button startQuiz' onClick = {this.props.handleClick}>Get Started</button>		)
+			return (<button className = 'button startQuiz' onClick = {this.props.handleClick}>Get Started</button> );
 		}
 		return null;
 	}
@@ -42,35 +43,37 @@ export default class Quiz extends React.Component{
 			quizScoreBucket:[],
 			questions: this.props.quizJSON.questions || [], 
 			questionCount: this.props.quizJSON.questions.length || 0
-		}
+		};
 	}
 
 	renderQuestions(){
 		return(
 			this.state.questions.map((question,i)=>{
-				return <Question 
-							{...this.props}
-							question={question} 
-							key={i} i={i} 
-							currentQuestion = {this.state.currentQuestion} 
-							questionCount = {this.state.questionCount} 
-							nextQuestion = {this.nextQuestion}
-							updateScore = {this.updateScore}
-							updateScoreBucket = {this.updateScoreBucket}
-							 />
+				return( 
+					<Question 
+						{...this.props}
+						question={question} 
+						key={i} i={i} 
+						currentQuestion = {this.state.currentQuestion} 
+						questionCount = {this.state.questionCount} 
+						nextQuestion = {this.nextQuestion}
+						updateScore = {this.updateScore}
+						updateScoreBucket = {this.updateScoreBucket}
+					/>
+				);
 			})
-		)
+		);
 	}
 
 	startQuiz(){
 		this.setState({quizStarted:true}, ()=>{
-			this.props.events.onStartQuiz({options:{}})
-		})
+			this.props.events.onStartQuiz({options:{}});
+		});
 	}
 
 	updateScore(correct){
 		if(correct){
-			this.setState({quizScore: this.state.quizScore+1})
+			this.setState({quizScore: this.state.quizScore+1});
 		}
 	}
 
@@ -79,16 +82,16 @@ export default class Quiz extends React.Component{
 		if( bucketIndex === -1 ){
 			this.setState(prevState => ({
 				quizScoreBucket: [...prevState.quizScoreBucket, {choice:item, value: 1}]
-			  }))
+			}));
 		} else{
 			let bucket = this.state.quizScoreBucket[bucketIndex];
 			let quizScoreBucket = this.state.quizScoreBucket;
 			bucket.value = bucket.value+1;
 			quizScoreBucket[bucketIndex] = bucket;
 
-			this.setState(prevState => ({
+			this.setState(() => ({
 				quizScoreBucket: quizScoreBucket
-			  }))
+			}));
 		}
 
 	}
@@ -103,9 +106,9 @@ export default class Quiz extends React.Component{
 							questionCount:this.state.questionCount
 						}
 					});
-				})
+				});
 			}
-		})
+		});
 	}
 
 	render(){
@@ -113,14 +116,31 @@ export default class Quiz extends React.Component{
 			<div id="slickQuiz">
 				<QuizHeader quizStarted = {this.state.quizStarted} name={this.props.quizJSON.info.name} main={this.props.quizJSON.info.main} />
 				<div className = "quizArea">
-				<StartButton show={!this.state.quizStarted} handleClick = {this.startQuiz} />
-				{this.state.quizStarted ? this.renderQuestions() : null}
-				<Results {...this.props} show={this.state.quizCompleted} score = {this.state.quizScore} buckets = {this.state.quizScoreBucket}  questionCount = {this.state.questionCount} />
+					<StartButton show={!this.state.quizStarted} handleClick = {this.startQuiz} />
+					{this.state.quizStarted ? this.renderQuestions() : null}
+					<Results {...this.props} show={this.state.quizCompleted} score = {this.state.quizScore} buckets = {this.state.quizScoreBucket}  questionCount = {this.state.questionCount} />
 				</div>
 			</div>
-		)
+		);
 	}
 }
+
+Quiz.propTypes= {
+	quizJSON: PropTypes.object,
+	events: PropTypes.object
+};
+
+StartButton.propTypes = {
+	handleClick: PropTypes.func,
+	show: PropTypes.bool
+};
+
+QuizHeader.propTypes = {
+	name: PropTypes.string,
+	quizStarted: PropTypes.bool,
+	main: PropTypes.string,
+
+};
 
 Quiz.defaultProps = {
 	checkAnswerText:  'Check My Answer!',
@@ -157,7 +177,7 @@ Quiz.defaultProps = {
 	// 	completeQuiz: function () {}
 	// },
 	events: {
-		onStartQuiz: function (options) {},
-		onCompleteQuiz: function (options) {}  // reserved: options.questionCount, options.score
+		onStartQuiz: function (options) {}, // eslint-disable-line
+		onCompleteQuiz: function (options) {}  //eslint-disable-line 
 	}
-}
+};

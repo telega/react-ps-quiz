@@ -1,18 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 class AnswerCardButton extends React.Component{
 
 	render(){
 		if(this.props.showResults){
-			return(
-				<button className= "button" onClick = {this.props.onClick}>Show Results</button>
-			)
+			return( <button className= "button" onClick = {this.props.onClick}>Show Results</button> );
 		}
-
 		return(
-			<button className= "button" onClick = {this.props.onClick} dangerouslySetInnerHTML={{__html:this.props.nextQuestionText}}/>
-		)	
+			<button className= "button" 
+				onClick = {this.props.onClick} 
+				dangerouslySetInnerHTML={{__html:this.props.nextQuestionText}}
+			/>
+		);
 	}
 }
 
@@ -26,14 +27,14 @@ class AnswerCard extends React.Component{
 						<div dangerouslySetInnerHTML={{__html:this.props.question.correct}} />
 						<AnswerCardButton nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount) } />
 					</div>
-				)
+				);
 			}
 			return (
 				<div>	
 					<div dangerouslySetInnerHTML={{__html:this.props.question.incorrect}} />
 					<AnswerCardButton nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount)} />
 				</div>
-			)
+			);
 		}
 		return null;
 	}
@@ -52,17 +53,17 @@ class QuestionCard extends React.Component{
 		this.state = {
 			selectedOption: null,
 			showPreventUnansweredText: false
-		}
+		};
 	}
 
 	handleOptionChange(e){
-		this.setState({selectedOption: e.target.value, showPreventUnansweredText:false})
+		this.setState({selectedOption: e.target.value, showPreventUnansweredText:false});
 	}
 
 	checkAnswer(){
 	
 		if(this.props.preventUnanswered && !this.state.selectedOption){
-			this.setState({showPreventUnansweredText:true})
+			this.setState({showPreventUnansweredText:true});
 		} else {
 
 			if(this.props.useScoreBuckets){
@@ -85,8 +86,8 @@ class QuestionCard extends React.Component{
 						{a.option}
 					</label>
 				</div>
-			)
-		})
+			);
+		});
 	}
 
 
@@ -106,7 +107,7 @@ class QuestionCard extends React.Component{
 					<button onClick = {this.checkAnswer}>{this.props.checkAnswerText}</button>
 				</div>
 
-			)
+			);
 		}
 		return null;
 	}
@@ -141,17 +142,61 @@ export default class Question extends React.Component{
 	updateScoreBucket(item){
 		this.props.updateScoreBucket(item);
 		this.props.nextQuestion();	
-	};
+	}
 
 	render(){
 		if(this.props.currentQuestion === this.props.i){
 			return(
 				<div>
-				<QuestionCard {...this.props} show={!this.state.showAnswerCard} updateScore = {this.updateScore} updateScoreBucket = {this.updateScoreBucket} />
-				<AnswerCard {...this.props} show = {this.state.showAnswerCard} isCorrect = {this.state.isCorrect}/>
+					<QuestionCard {...this.props} show={!this.state.showAnswerCard} updateScore = {this.updateScore} updateScoreBucket = {this.updateScoreBucket} />
+					<AnswerCard {...this.props} show = {this.state.showAnswerCard} isCorrect = {this.state.isCorrect}/>
 				</div>
-			)
+			);
 		}
 		return null;
 	}
 }
+
+
+AnswerCardButton.propTypes = {
+	showResults: PropTypes.bool,
+	onClick: PropTypes.func,
+	nextQuestionText: PropTypes.string,
+	nextQuestion: PropTypes.func
+};
+
+AnswerCard.propTypes = {
+	show:PropTypes.bool,
+	isCorrect:PropTypes.bool,
+	question:PropTypes.object,
+	nextQuestionText: PropTypes.string,
+	nextQuestion: PropTypes.func,
+	currentQuestion: PropTypes.number,
+	questionCount: PropTypes.number,
+	//preventUnanswered: PropTypes.bool,
+
+};
+
+QuestionCard.propTypes = {
+	preventUnanswered: PropTypes.bool,
+	useScoreBuckets: PropTypes.bool,
+	question: PropTypes.object,
+	updateScore: PropTypes.func,
+	updateScoreBucket: PropTypes.func,
+	show: PropTypes.bool,
+	currentQuestion: PropTypes.number,
+	questionCount: PropTypes.number,
+	i:PropTypes.number, //its an index innit? 
+	preventUnansweredText: PropTypes.string,
+	checkAnswerText: PropTypes.string,
+	
+};
+
+Question.propTypes = {
+	updateScore: PropTypes.func,
+	perQuestionResponseMessaging: PropTypes.bool,
+	nextQuestion: PropTypes.func,
+	updateScoreBucket: PropTypes.func,
+	currentQuestion: PropTypes.number,
+	i: PropTypes.number
+};

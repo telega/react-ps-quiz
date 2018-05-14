@@ -12,7 +12,6 @@ export default class Results extends React.Component{
 							return( <div key = {i}> {bucket.choice } - {bucket.value} </div>)
 						})}
 					</div>
-
 				)
 
 			}else{ 
