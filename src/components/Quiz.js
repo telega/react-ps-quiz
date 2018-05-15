@@ -50,7 +50,8 @@ export default class Quiz extends React.Component{
 			quizScore: 0,
 			quizScoreBucket:[],
 			questions: this.props.quizJSON.questions || [], 
-			questionCount: this.props.quizJSON.questions.length || 0
+			questionCount: this.props.quizJSON.questions.length || 0,
+			quizScoreLevel: 0
 		};
 	}
 
@@ -131,11 +132,13 @@ export default class Quiz extends React.Component{
 		this.setState({currentQuestion: this.state.currentQuestion+1}, ()=>{
 			if(this.state.currentQuestion === this.state.questionCount){
 				this.setState({quizCompleted: true}, ()=>{
+
 					this.props.events.onCompleteQuiz({
 						options:{
 							score:this.state.quizScore,
 							questionCount:this.state.questionCount,
-							collectedInfo:this.state.collectedInfo
+							collectedInfo:this.state.collectedInfo,
+							quizScoreBucket: this.state.quizScoreBucket
 						}
 					});
 				});
@@ -207,17 +210,17 @@ Quiz.defaultProps = {
 	// randomSortAnswers: false,
 	preventUnanswered: false,
 	// disableScore: false,
-	// disableRanking: false,
+	disableRanking: false,
 	// scoreAsPercentage: false,
-	perQuestionResponseMessaging: true,
+	perQuestionResponseMessaging:false,
 	// perQuestionResponseAnswers: false,
 	// completionResponseMessaging: false,
 	// displayQuestionCount: true,   // Deprecate?
 	// displayQuestionNumber: true,  // Deprecate?
 	useScoreBuckets: true,
-	collectInfo: true,
+	collectInfo: false,
 	collectInfoText: '<p>Enter your Email address to get started.</p>',
-	validateCollectedInfo: true, // fremail validation...
+	validateCollectedInfo: false, // fremail validation...
 	// animationCallbacks: { // only for the methods that have jQuery animations offering callback
 	// 	setupQuiz: function () {},
 	// 	startQuiz: function () {},
