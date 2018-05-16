@@ -212,7 +212,7 @@ Quiz.defaultProps = {
 	// disableScore: false,
 	disableRanking: false,
 	// scoreAsPercentage: false,
-	perQuestionResponseMessaging:false,
+	perQuestionResponseMessaging:true,
 	// perQuestionResponseAnswers: false,
 	// completionResponseMessaging: false,
 	// displayQuestionCount: true,   // Deprecate?

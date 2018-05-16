@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { calculateLevel, calculateBucketLevel, getQuestionScore } from '../services/scores';
+import { calculateLevel, calculateBucketLevel, getQuestionScore, useCheckBoxes } from '../services/scores';
 const  should = require('chai').should(); // we need to assign to variable so we can access null 
 
 // normal scoring
@@ -124,3 +124,38 @@ it('returns the index of a selcetion for bucketing', () =>{
 
 })
 
+// test helper function
+
+it('determines if we should use checkboxes or stick to radios', () =>{
+	let basicQuestion = { // Question 1 - Multiple Choice, Single True Answer
+		"q": "What number is the letter A in the English alphabet?",
+		"a": [
+			{"option": "8",      "correct": false},
+			{"option": "14",     "correct": false},
+			{"option": "1",      "correct": true},
+			{"option": "23",     "correct": false} // no comma here
+		],
+		"correct": "<p><span>That's right!</span> The letter A is the first letter in the alphabet!</p>",
+		"incorrect": "<p><span>Uhh no.</span> It's the first letter of the alphabet. Did you actually <em>go</em> to kindergarden?</p>" // no comma here
+	};
+	const radios = useCheckBoxes(basicQuestion.a);
+	radios.should.be.a('boolean')
+	radios.should.equal(false)
+	
+	let questionMulti= { 
+		"q": "Which of the following best represents your preferred breakfast?",
+		"a": [
+			{"option": "Bacon and eggs",               "correct": false},
+			{"option": "Fruit, oatmeal, and yogurt",   "correct": true},
+			{"option": "Leftover pizza",               "correct": false},
+			{"option": "Eggs, fruit, toast, and milk", "correct": true} // no comma here
+		],
+		"select_any": true,
+		"correct": "<p><span>Nice!</span> Your cholestoral level is probably doing alright.</p>",
+		"incorrect": "<p><span>Hmmm.</span> You might want to reconsider your options.</p>" // no comma here
+	};
+
+	const checkboxes = useCheckBoxes(questionMulti.a);
+	checkboxes.should.be.a('boolean');
+	checkboxes.should.equal(true);
+})

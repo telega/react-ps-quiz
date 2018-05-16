@@ -37,6 +37,23 @@ export function calculateBucketLevel(quizScoreBucket) {
 	return level;
 }
 
+
+export function getCorrectAnswers(questionAnswers){
+	let correctAnswers = questionAnswers.filter((ans)=>{
+		return ans.correct === true;
+	});
+	return correctAnswers;
+
+}
+
+export function useCheckBoxes(questionAnswers){
+	let correctAnswers = getCorrectAnswers(questionAnswers);
+	if(correctAnswers.length > 1){
+		return true;
+	}
+	return false;
+}
+
 export function getQuestionScore(questionAnswers, questionResponse, useScoreBuckets = false, selectAny = false){
 
 	// questionResponse is an Array 
@@ -46,9 +63,7 @@ export function getQuestionScore(questionAnswers, questionResponse, useScoreBuck
 		let index =  _.findIndex(questionAnswers, { option: qr} );
 		return index;
 	} else {
-		let correctAnswers = questionAnswers.filter((ans)=>{
-			return ans.correct === true;
-		});
+		let correctAnswers = getCorrectAnswers(questionAnswers);
 
 		let correctCount = 0;
 		questionResponse.forEach( (ans) => {

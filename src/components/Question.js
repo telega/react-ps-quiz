@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { getQuestionScore } from '../services/scores';
+import { getQuestionScore, useCheckBoxes } from '../services/scores';
 
 class AnswerCardButton extends React.Component{
 
@@ -41,7 +41,6 @@ class AnswerCard extends React.Component{
 	}
 }
 
-
 class QuestionCard extends React.Component{
 
 	constructor(props){
@@ -52,8 +51,10 @@ class QuestionCard extends React.Component{
 		this.checkAnswer = this.checkAnswer.bind(this);
 
 		this.state = {
+			selectAny: this.props.question.select_any || false,
 			selectedOptions: [],
-			showPreventUnansweredText: false
+			showPreventUnansweredText: false,
+			useCheckBoxes: useCheckBoxes( this.props.question.a )
 		};
 	}
 
@@ -83,8 +84,14 @@ class QuestionCard extends React.Component{
 				let index = getQuestionScore(this.props.question.a, this.state.selectedOptions, true );
 				this.props.updateScoreBucket(index);
 			} else {
-				let correct =  getQuestionScore(this.props.question.a, this.state.selectedOptions); 
-				this.props.updateScore(correct);
+				if(this.state.selectAny){
+					let correct =  getQuestionScore(this.props.question.a, this.state.selectedOptions, false, true); 
+					this.props.updateScore(correct);
+				} else {
+					let correct =  getQuestionScore(this.props.question.a, this.state.selectedOptions); 
+					this.props.updateScore(correct);
+				}
+
 			}
 		}
 	
@@ -95,14 +102,13 @@ class QuestionCard extends React.Component{
 			return (
 				<div className = 'radio' key = {i}>
 					<label>
-						<input type='radio' value = {a.option} checked ={ (_.indexOf(this.state.selectedOptions, a.option ) !== -1) } onChange = {this.handleOptionChange} /> 
+						<input type={this.state.useCheckBoxes? 'checkbox' : 'radio'} value = {a.option} checked ={ (_.indexOf(this.state.selectedOptions, a.option ) !== -1) } onChange = {this.handleOptionChange} /> 
 						{a.option}
 					</label>
 				</div>
 			);
 		});
 	}
-
 
 	render(){
 		
