@@ -37,4 +37,44 @@ export function calculateBucketLevel(quizScoreBucket) {
 	return level;
 }
 
+export function getQuestionScore(questionAnswers, questionResponse, useScoreBuckets = false, selectAny = false){
 
+	// questionResponse is an Array 
+
+	if(useScoreBuckets){
+		let qr = questionResponse[0];
+		let index =  _.findIndex(questionAnswers, { option: qr} );
+		return index;
+	} else {
+		let correctAnswers = questionAnswers.filter((ans)=>{
+			return ans.correct === true;
+		});
+
+		let correctCount = 0;
+		questionResponse.forEach( (ans) => {
+			let idx = _.findIndex(correctAnswers, {option: ans});
+			if(idx !== -1){
+				correctCount++; 
+			}
+		});
+
+		if(selectAny){
+			if(correctCount >= 1){ 
+				return true; 
+			}
+			return false;
+		} else {
+			// find if there is more than one correct response
+			if (correctAnswers.length >= 1){
+				if (correctCount === correctAnswers.length){
+					return true;
+				} 			
+				return false;
+			} else {
+				let qr = questionResponse[0];
+				let correct = ( _.findIndex(questionAnswers, { option: qr, correct: true } ) !== -1 ) ? true : false;
+				return correct;
+			}
+		}
+	}
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { getQuestionScore } from '../services/scores';
 
 class AnswerCardButton extends React.Component{
 
@@ -51,26 +52,38 @@ class QuestionCard extends React.Component{
 		this.checkAnswer = this.checkAnswer.bind(this);
 
 		this.state = {
-			selectedOption: null,
+			selectedOptions: [],
 			showPreventUnansweredText: false
 		};
 	}
 
 	handleOptionChange(e){
-		this.setState({selectedOption: e.target.value, showPreventUnansweredText:false});
+		//this.setState({selectedOption: e.target.value, showPreventUnansweredText:false});
+		let value = e.target.value;
+		let selectedOptions = this.state.selectedOptions; 
+
+		let idx = _.indexOf(selectedOptions, value);
+		if(idx === -1){
+			this.setState(prevState =>({
+				selectedOptions: [...prevState.selectedOptions, value]
+			}));
+		} else {
+			selectedOptions = _.without(selectedOptions, value);
+			this.setState(()=>({selectedOptions:selectedOptions}));
+		}
 	}
 
 	checkAnswer(){
 	
-		if(this.props.preventUnanswered && !this.state.selectedOption){
+		if(this.props.preventUnanswered && (this.state.selectedOptions.length === 0) ){
 			this.setState({showPreventUnansweredText:true});
 		} else {
 
 			if(this.props.useScoreBuckets){
-				let index =  _.findIndex(this.props.question.a, { option: this.state.selectedOption } );
+				let index = getQuestionScore(this.props.question.a, this.state.selectedOptions, true );
 				this.props.updateScoreBucket(index);
 			} else {
-				let correct = ( _.findIndex(this.props.question.a, { option: this.state.selectedOption, correct: true } ) !== -1 ) ? true : false;
+				let correct =  getQuestionScore(this.props.question.a, this.state.selectedOptions); 
 				this.props.updateScore(correct);
 			}
 		}
@@ -82,7 +95,7 @@ class QuestionCard extends React.Component{
 			return (
 				<div className = 'radio' key = {i}>
 					<label>
-						<input type='radio' value = {a.option} checked ={this.state.selectedOption === a.option} onChange = {this.handleOptionChange} /> 
+						<input type='radio' value = {a.option} checked ={ (_.indexOf(this.state.selectedOptions, a.option ) !== -1) } onChange = {this.handleOptionChange} /> 
 						{a.option}
 					</label>
 				</div>
@@ -96,7 +109,7 @@ class QuestionCard extends React.Component{
 		if(this.props.show){
 			return(
 				<div>
-					<div>Question {this.props.currentQuestion + 1} of {this.props.questionCount} | i= {this.props.i}</div>
+					<div>Question {this.props.currentQuestion + 1} of {this.props.questionCount} | i=  {this.props.i}</div>
 					<div className = "questionClass">
 						{this.props.question.q}
 						<form className="questionAnswers">
@@ -104,7 +117,7 @@ class QuestionCard extends React.Component{
 						</form>
 					</div>
 					<p>{(this.state.showPreventUnansweredText) ? this.props.preventUnansweredText : null }</p>
-					<button onClick = {this.checkAnswer}>{this.props.checkAnswerText}</button>
+					<button onClick = {this.checkAnswer}> {this.props.checkAnswerText}</button>
 				</div>
 
 			);

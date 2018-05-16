@@ -47,7 +47,7 @@ export default class Results extends React.Component{
 					<div>
 						<h2>Results</h2>
 						{this.props.buckets.map((bucket,i)=>{
-							return( <div key = {i}> {bucket.choice } - {bucket.value} </div>);
+							return( <div key = {i}> { 'ABCDEFGHIJK'.charAt(bucket.choice) } - {bucket.value} </div>);
 						})}
 						<Levels {...this.props} show={!this.props.disableRanking}  />
 					</div>

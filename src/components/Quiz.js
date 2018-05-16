@@ -217,7 +217,7 @@ Quiz.defaultProps = {
 	// completionResponseMessaging: false,
 	// displayQuestionCount: true,   // Deprecate?
 	// displayQuestionNumber: true,  // Deprecate?
-	useScoreBuckets: true,
+	useScoreBuckets: false,
 	collectInfo: false,
 	collectInfoText: '<p>Enter your Email address to get started.</p>',
 	validateCollectedInfo: false, // fremail validation...
