@@ -115,7 +115,7 @@ class QuestionCard extends React.Component{
 		if(this.props.show){
 			return(
 				<div>
-					<div>Question {this.props.currentQuestion + 1} of {this.props.questionCount} | i=  {this.props.i}</div>
+					<div>Question {this.props.currentQuestion + 1} of {this.props.questionCount} </div>
 					<div className = "questionClass">
 						{this.props.question.q}
 						<form className="questionAnswers">
