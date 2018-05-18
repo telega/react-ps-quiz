@@ -1,6 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+import {init} from './App';
+import { quizJSON } from  './data/quiz';
+let config = {};
 
-ReactDOM.render(<App />, document.getElementById('root'));
-
+init(config, quizJSON);

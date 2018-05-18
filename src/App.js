@@ -1,14 +1,10 @@
-import React, { Component } from 'react';
-import { quizJSON } from  './data/quiz';
-
+import React from 'react';
 import Quiz from './components/Quiz';
+import ReactDOM from 'react-dom';
 
-class App extends Component {
-	render() {
-		return (
-			<Quiz quizJSON = {quizJSON} />
-		);
-	}
-}
+export const init = (config, quizJSON) =>{
+	ReactDOM.render(<Quiz config = {config} quizJSON = {quizJSON} />, document.getElementById('root'));
+};
 
-export default App;
+
+
