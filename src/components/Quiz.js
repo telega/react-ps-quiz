@@ -39,6 +39,7 @@ export default class Quiz extends React.Component{
 		this.updateScore = this.updateScore.bind(this);
 		this.updateScoreBucket = this.updateScoreBucket.bind(this);
 		this.handleInfoChange = this.handleInfoChange.bind(this);
+		this.updateQuizResponses = this.updateQuizResponses.bind(this);
 
 		this.state = {
 			quizStarted: false,
@@ -51,7 +52,8 @@ export default class Quiz extends React.Component{
 			quizScoreBucket:[],
 			questions: this.props.quizJSON.questions || [], 
 			questionCount: this.props.quizJSON.questions.length || 0,
-			quizScoreLevel: 0
+			quizScoreLevel: 0,
+			quizResponses:[]
 		};
 	}
 
@@ -79,6 +81,7 @@ export default class Quiz extends React.Component{
 	}
 
 
+
 	renderQuestions(){
 		return(
 			this.state.questions.map((question,i)=>{
@@ -91,6 +94,7 @@ export default class Quiz extends React.Component{
 						questionCount = {this.state.questionCount} 
 						nextQuestion = {this.nextQuestion}
 						updateScore = {this.updateScore}
+						updateQuizResponses = {this.updateQuizResponses}
 						updateScoreBucket = {this.updateScoreBucket}
 					/>
 				);
@@ -108,6 +112,12 @@ export default class Quiz extends React.Component{
 		if(correct){
 			this.setState({quizScore: this.state.quizScore+1});
 		}
+	}
+
+	updateQuizResponses(item){
+		this.setState(prevState=> ({
+			quizResponses: [...prevState.quizResponses, item]
+		}));
 	}
 
 	updateScoreBucket(item){
@@ -138,7 +148,8 @@ export default class Quiz extends React.Component{
 							score:this.state.quizScore,
 							questionCount:this.state.questionCount,
 							collectedInfo:this.state.collectedInfo,
-							quizScoreBucket: this.state.quizScoreBucket
+							quizScoreBucket: this.state.quizScoreBucket,
+							quizResponses: this.state.quizResponses
 						}
 					});
 				});
@@ -217,7 +228,7 @@ Quiz.defaultProps = {
 	// completionResponseMessaging: false,
 	// displayQuestionCount: true,   // Deprecate?
 	// displayQuestionNumber: true,  // Deprecate?
-	useScoreBuckets: false,
+	useScoreBuckets: true,
 	collectInfo: false,
 	collectInfoText: '<p>Enter your Email address to get started.</p>',
 	validateCollectedInfo: false, // fremail validation...

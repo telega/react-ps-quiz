@@ -147,6 +147,12 @@ export default class Question extends React.Component{
 	updateScore(correct){
 		this.props.updateScore(correct);
 
+		this.props.updateQuizResponses({
+			questionNumber: this.props.i,
+			questionText: this.props.question.q,
+			response: correct
+		});
+
 		if(this.props.perQuestionResponseMessaging){
 			this.setState({
 				isCorrect: correct,
@@ -160,6 +166,13 @@ export default class Question extends React.Component{
 
 	updateScoreBucket(item){
 		this.props.updateScoreBucket(item);
+
+		this.props.updateQuizResponses({
+			questionNumber: this.props.i,
+			questionText: this.props.question.q,
+			response: item
+		});
+
 		this.props.nextQuestion();	
 	}
 
@@ -217,5 +230,7 @@ Question.propTypes = {
 	nextQuestion: PropTypes.func,
 	updateScoreBucket: PropTypes.func,
 	currentQuestion: PropTypes.number,
-	i: PropTypes.number
+	i: PropTypes.number,
+	updateQuizResponses: PropTypes.func,
+	question: PropTypes.object,
 };
