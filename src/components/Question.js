@@ -43,6 +43,26 @@ class AnswerCard extends React.Component{
 	}
 }
 
+class QuestionCardButton extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		if(this.props.showResults){
+			return( <button className= "button" onClick = {this.props.onClick}>Show Results</button> );
+		}
+		return(
+			<button className= "button" 
+				onClick = {this.props.onClick} 
+				dangerouslySetInnerHTML={{__html:this.props.checkAnswerText}}
+			/>
+		);
+	}
+
+}
+
+
 class QuestionCard extends React.Component{
 
 	constructor(props){
@@ -61,7 +81,6 @@ class QuestionCard extends React.Component{
 	}
 
 	handleOptionChange(e){
-		//this.setState({selectedOption: e.target.value, showPreventUnansweredText:false});
 		let value = e.target.value;
 		let selectedOptions = this.state.selectedOptions; 
 
@@ -125,7 +144,7 @@ class QuestionCard extends React.Component{
 						</form>
 					</div>
 					<p>{(this.state.showPreventUnansweredText) ? this.props.preventUnansweredText : null }</p>
-					<button onClick = {this.checkAnswer}> {this.props.checkAnswerText}</button>
+					<QuestionCardButton onClick = {this.checkAnswer} checkAnswerText= {this.props.checkAnswerText} showResults={(this.props.currentQuestion +1 === this.props.questionCount)}/>
 				</div>
 
 			);
@@ -239,6 +258,12 @@ QuestionCard.propTypes = {
 	preventUnansweredText: PropTypes.string,
 	checkAnswerText: PropTypes.string,
 	
+};
+
+QuestionCardButton.propTypes = {
+	showResults: PropTypes.bool,
+	onClick: PropTypes.func,
+	checkAnswerText: PropTypes.string
 };
 
 Question.propTypes = {

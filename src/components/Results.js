@@ -47,12 +47,12 @@ export default class Results extends React.Component{
 			if(this.props.useScoreBuckets){
 				return(
 					<ReactCSSTransitionGroup
-						transitionName="example"
+						transitionName="quizCard"
 						transitionAppear={true}
 						transitionAppearTimeout={500}
 						transitionEnter={false}
 						transitionLeave={false}>
-						<div>
+						<div key={1}>
 							<h2>Results</h2>
 							{this.props.buckets.map((bucket,i)=>{
 								return( <div key = {i}> { 'ABCDEFGHIJK'.charAt(bucket.choice) } - {bucket.value} </div>);
@@ -65,12 +65,12 @@ export default class Results extends React.Component{
 			} else { 
 				return(
 					<ReactCSSTransitionGroup
-						transitionName="example"
+						transitionName="quizCard"
 						transitionAppear={true}
 						transitionAppearTimeout={500}
 						transitionEnter={false}
 						transitionLeave={false}>
-						<div>
+						<div key={1}>
 							<h2>Results</h2>
 							<p>You scored: {this.props.score} out of {this.props.questionCount} </p>
 							<Levels {...this.props} show={!this.props.disableRanking} />

@@ -1,0 +1,44 @@
+#slickQuiz {
+    background-color: #6f6f6f;
+    padding: 12px;
+    color: #fff;
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+}
+
+
+h1.quizName {
+    margin-top: 2px;
+}
+
+#slickQuiz button{
+    width: auto;
+    padding: 5px 15px;
+    color:#ffffff;
+    background-color:#00a5c4;
+    border: 1px solid #fff;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+	text-decoration: none;
+	font-size:16px;
+}
+#slickQuiz button:hover{
+	background-color: #75bb00
+}
+
+.quizArea {
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.questionClass{
+	margin-top:8px;
+}
+
+#slickQuiz input[type="radio"] {
+    margin-right: 8px;
+}
+
+#slickQuiz input[type="checkbox"] {
+    margin-right: 8px;
+}
