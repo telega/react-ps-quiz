@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { getQuestionScore, useCheckBoxes } from '../services/scores';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 
 class AnswerCardButton extends React.Component{
 
@@ -135,9 +137,9 @@ class QuestionCard extends React.Component{
 export default class Question extends React.Component{
 	constructor(props){
 		super(props);
-
 		this.updateScore = this.updateScore.bind(this);
 		this.updateScoreBucket = this.updateScoreBucket.bind(this);
+		this.renderCards = this.renderCards.bind(this);
 		this.state = {
 			showAnswerCard:false,
 			isCorrect: false
@@ -176,12 +178,27 @@ export default class Question extends React.Component{
 		this.props.nextQuestion();	
 	}
 
+	renderCards(){
+		if(this.state.showAnswerCard){
+			return(<AnswerCard key = {2} {...this.props} show = {this.state.showAnswerCard} isCorrect = {this.state.isCorrect}/>) ;
+		} else {
+			return (<QuestionCard key={1} {...this.props} show={!this.state.showAnswerCard} updateScore = {this.updateScore} updateScoreBucket = {this.updateScoreBucket} />
+			);
+		}
+	}
+
 	render(){
 		if(this.props.currentQuestion === this.props.i){
 			return(
-				<div>
-					<QuestionCard {...this.props} show={!this.state.showAnswerCard} updateScore = {this.updateScore} updateScoreBucket = {this.updateScoreBucket} />
-					<AnswerCard {...this.props} show = {this.state.showAnswerCard} isCorrect = {this.state.isCorrect}/>
+				<div>    
+					<ReactCSSTransitionGroup
+						transitionName="quizCard"
+						transitionAppear={true}
+						transitionAppearTimeout={500}
+						transitionEnterTimeout={500}
+						transitionLeave={false} >
+						{this.renderCards()}
+					</ReactCSSTransitionGroup >
 				</div>
 			);
 		}

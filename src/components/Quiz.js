@@ -4,14 +4,20 @@ import Question from './Question';
 import Results from './Results';
 import _ from 'lodash';
 import freemail from 'freemail-webpack';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class QuizHeader extends React.Component{
 	render(){
 		return(
 			<div className = "quizHeader">
 				<h1 className = "quizName">{this.props.name}</h1>
-				{!this.props.quizStarted ? <div dangerouslySetInnerHTML={{__html:this.props.main}} /> : null}
-				{!this.props.quizStarted && this.props.collectInfo ? <div dangerouslySetInnerHTML={{__html:this.props.collectInfoText}}/> :null }
+				{!this.props.quizStarted ? <div key={1} dangerouslySetInnerHTML={{__html:this.props.main}} /> : null}
+				<ReactCSSTransitionGroup
+					transitionName="example"
+					transitionEnterTimeout={500}
+					transitionLeaveTimeout={300}>
+					{!this.props.quizStarted && this.props.collectInfo ? <div dangerouslySetInnerHTML={{__html:this.props.collectInfoText}}/> :null }
+				</ReactCSSTransitionGroup>
 				{!this.props.quizStarted && this.props.collectInfo ? <form><input type='text'value={this.props.value} onChange = {this.props.handleInfoChange} ></input></form> : null }
 			</div>
 		);
@@ -86,10 +92,12 @@ export default class Quiz extends React.Component{
 		return(
 			this.state.questions.map((question,i)=>{
 				return( 
+				
 					<Question 
 						{...this.props}
 						question={question} 
-						key={i} i={i} 
+						key={i} 
+						i={i} 
 						currentQuestion = {this.state.currentQuestion} 
 						questionCount = {this.state.questionCount} 
 						nextQuestion = {this.nextQuestion}
@@ -97,6 +105,8 @@ export default class Quiz extends React.Component{
 						updateQuizResponses = {this.updateQuizResponses}
 						updateScoreBucket = {this.updateScoreBucket}
 					/>
+
+		
 				);
 			})
 		);

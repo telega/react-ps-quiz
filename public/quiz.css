@@ -1,0 +1,26 @@
+.quizCard-enter {
+	opacity: 0.01;
+  }
+  
+.quizCard-enter.quizCard-enter-active {
+	opacity: 1;
+	transition: opacity 500ms ease-in;
+}
+  
+.quizCard-leave {
+	opacity: 1;
+}
+  
+.quizCard-leave.quizCard-leave-active {
+	opacity: 0.01;
+	transition: opacity 100ms ease-in;
+}
+
+.quizCard-appear {
+	opacity: 0.01;
+}
+  
+.quizCard-appear.quizCard-appear-active {
+	opacity: 1;
+	transition: opacity .5s ease-in;
+}

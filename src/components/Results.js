@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {calculateBucketLevel, calculateLevel } from '../services/scores';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 
 class Levels extends React.Component{
 
@@ -44,22 +46,36 @@ export default class Results extends React.Component{
 			
 			if(this.props.useScoreBuckets){
 				return(
-					<div>
-						<h2>Results</h2>
-						{this.props.buckets.map((bucket,i)=>{
-							return( <div key = {i}> { 'ABCDEFGHIJK'.charAt(bucket.choice) } - {bucket.value} </div>);
-						})}
-						<Levels {...this.props} show={!this.props.disableRanking}  />
-					</div>
+					<ReactCSSTransitionGroup
+						transitionName="example"
+						transitionAppear={true}
+						transitionAppearTimeout={500}
+						transitionEnter={false}
+						transitionLeave={false}>
+						<div>
+							<h2>Results</h2>
+							{this.props.buckets.map((bucket,i)=>{
+								return( <div key = {i}> { 'ABCDEFGHIJK'.charAt(bucket.choice) } - {bucket.value} </div>);
+							})}
+							<Levels {...this.props} show={!this.props.disableRanking}  />
+						</div>
+					</ReactCSSTransitionGroup>
 				);
 
 			} else { 
 				return(
-					<div>
-						<h2>Results</h2>
-						<p>You scored: {this.props.score} out of {this.props.questionCount} </p>
-						<Levels {...this.props} show={!this.props.disableRanking} />
-					</div>
+					<ReactCSSTransitionGroup
+						transitionName="example"
+						transitionAppear={true}
+						transitionAppearTimeout={500}
+						transitionEnter={false}
+						transitionLeave={false}>
+						<div>
+							<h2>Results</h2>
+							<p>You scored: {this.props.score} out of {this.props.questionCount} </p>
+							<Levels {...this.props} show={!this.props.disableRanking} />
+						</div>
+					</ReactCSSTransitionGroup>
 				);
 			}
 		
