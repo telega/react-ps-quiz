@@ -42,3 +42,18 @@ h1.quizName {
 #slickQuiz input[type="checkbox"] {
     margin-right: 8px;
 }
+
+#slickQuiz button:disabled{
+	background-color:#3c3c3c;
+}
+
+#slickQuiz button.button.startQuiz {
+    margin-top: 8px;
+}
+
+#slickQuiz .emailForm input[type="text"] {
+    width: 200px;
+    height: 20px;
+    font-size: 16px;
+    background-color: #ececec;
+}

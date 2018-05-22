@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Question from './Question';
 import Results from './Results';
 import _ from 'lodash';
-import freemail from 'freemail-webpack';
+import { isValidEmail } from '../services/validate';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class QuizHeader extends React.Component{
@@ -18,7 +18,7 @@ class QuizHeader extends React.Component{
 					transitionLeaveTimeout={300}>
 					{!this.props.quizStarted && this.props.collectInfo ? <div dangerouslySetInnerHTML={{__html:this.props.collectInfoText}}/> :null }
 				</ReactCSSTransitionGroup>
-				{!this.props.quizStarted && this.props.collectInfo ? <form><input type='text'value={this.props.value} onChange = {this.props.handleInfoChange} ></input></form> : null }
+				{!this.props.quizStarted && this.props.collectInfo ? <form className="emailForm" ><input type='text'value={this.props.value} onChange = {this.props.handleInfoChange} ></input></form> : null }
 			</div>
 		);
 	}
@@ -66,26 +66,10 @@ export default class Quiz extends React.Component{
 	handleInfoChange(e){
 		this.setState({collectedInfo:e.target.value}, ()=>{
 			// block submission when using fremail providers.. 
-			if(this.props.validateCollectedInfo){
-				let re = /\S+@\S+\.\S+/;
-				if( re.test(this.state.collectedInfo) ){
-					if(!freemail.isFree(this.state.collectedInfo)){
-						this.setState({startButtonActive: true} ); 
-					}
-					else {
-						this.setState({startButtonActive: false});
-					}
-				} 
-				else {
-					this.setState({startButtonActive: false});
-				}
-			} else {
-				this.setState({startButtonActive: true});
-			}
+			let startButtonActive = isValidEmail(this.state.collectedInfo,this.props.allowFreemail);
+			this.setState({startButtonActive: startButtonActive} );
 		});
-		
 	}
-
 
 
 	renderQuestions(){
@@ -194,7 +178,7 @@ Quiz.propTypes= {
 	events: PropTypes.object,
 	collectInfo: PropTypes.bool,
 	collectInfoText: PropTypes.string,
-	validateCollectedInfo: PropTypes.bool,
+	allowFreemail: PropTypes.bool,
 };
 
 StartButton.propTypes = {
@@ -239,9 +223,9 @@ Quiz.defaultProps = {
 	// displayQuestionCount: true,   // Deprecate?
 	// displayQuestionNumber: true,  // Deprecate?
 	useScoreBuckets: true,
-	collectInfo: false,
+	collectInfo: true,
+	allowFreemail: false,
 	collectInfoText: '<p>Enter your Email address to get started.</p>',
-	validateCollectedInfo: false, // fremail validation...
 	// animationCallbacks: { // only for the methods that have jQuery animations offering callback
 	// 	setupQuiz: function () {},
 	// 	startQuiz: function () {},
