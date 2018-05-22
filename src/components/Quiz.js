@@ -138,13 +138,13 @@ export default class Quiz extends React.Component{
 				this.setState({quizCompleted: true}, ()=>{
 
 					this.props.events.onCompleteQuiz({
-						options:{
-							score:this.state.quizScore,
-							questionCount:this.state.questionCount,
-							collectedInfo:this.state.collectedInfo,
-							quizScoreBucket: this.state.quizScoreBucket,
-							quizResponses: this.state.quizResponses
-						}
+						
+						score:this.state.quizScore,
+						questionCount:this.state.questionCount,
+						collectedInfo:this.state.collectedInfo,
+						quizScoreBucket: this.state.quizScoreBucket,
+						quizResponses: this.state.quizResponses
+						
 					});
 				});
 			}
@@ -223,7 +223,7 @@ Quiz.defaultProps = {
 	// displayQuestionCount: true,   // Deprecate?
 	// displayQuestionNumber: true,  // Deprecate?
 	useScoreBuckets: true,
-	collectInfo: true,
+	collectInfo: false,
 	allowFreemail: false,
 	collectInfoText: '<p>Enter your Email address to get started.</p>',
 	// animationCallbacks: { // only for the methods that have jQuery animations offering callback

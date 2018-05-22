@@ -44,10 +44,7 @@ class AnswerCard extends React.Component{
 }
 
 class QuestionCardButton extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
+	
 	render(){
 		if(this.props.showResults){
 			return( <button className= "button" onClick = {this.props.onClick}>Show Results</button> );
@@ -81,14 +78,20 @@ class QuestionCard extends React.Component{
 	}
 
 	handleOptionChange(e){
+		let inputType = e.target.type;
 		let value = e.target.value;
 		let selectedOptions = this.state.selectedOptions; 
 
 		let idx = _.indexOf(selectedOptions, value);
+		
 		if(idx === -1){
-			this.setState(prevState =>({
-				selectedOptions: [...prevState.selectedOptions, value]
-			}));
+			if(inputType === 'radio'){
+				this.setState({selectedOptions:[value]});
+			} else {
+				this.setState(prevState =>({
+					selectedOptions: [...prevState.selectedOptions, value]
+				}));
+			}
 		} else {
 			selectedOptions = _.without(selectedOptions, value);
 			this.setState(()=>({selectedOptions:selectedOptions}));
