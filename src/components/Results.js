@@ -54,9 +54,9 @@ export default class Results extends React.Component{
 						transitionLeave={false}>
 						<div key={1}>
 							<h2>Results</h2>
-							{this.props.buckets.map((bucket,i)=>{
+							{(!this.props.disableScore)? this.props.buckets.map((bucket,i)=>{
 								return( <div key = {i}> { 'ABCDEFGHIJK'.charAt(bucket.choice) } - {bucket.value} </div>);
-							})}
+							}):null}
 							<Levels {...this.props} show={!this.props.disableRanking}  />
 						</div>
 					</ReactCSSTransitionGroup>
@@ -91,7 +91,8 @@ Results.propTypes = {
 	buckets: PropTypes.array,
 	score: PropTypes.number,
 	questionCount: PropTypes.number,
-	disableRanking: PropTypes.bool
+	disableRanking: PropTypes.bool,
+	disableScore: PropTypes.bool
 };
 
 Levels.propTypes = {

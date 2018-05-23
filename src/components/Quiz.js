@@ -4,7 +4,7 @@ import Question from './Question';
 import Results from './Results';
 import _ from 'lodash';
 import { isValidEmail } from '../services/validate';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+//import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class QuizHeader extends React.Component{
 	render(){
@@ -12,12 +12,7 @@ class QuizHeader extends React.Component{
 			<div className = "quizHeader">
 				<h1 className = "quizName">{this.props.name}</h1>
 				{!this.props.quizStarted ? <div key={1} dangerouslySetInnerHTML={{__html:this.props.main}} /> : null}
-				<ReactCSSTransitionGroup
-					transitionName="example"
-					transitionEnterTimeout={500}
-					transitionLeaveTimeout={300}>
-					{!this.props.quizStarted && this.props.collectInfo ? <div dangerouslySetInnerHTML={{__html:this.props.collectInfoText}}/> :null }
-				</ReactCSSTransitionGroup>
+				{!this.props.quizStarted && this.props.collectInfo ? <div dangerouslySetInnerHTML={{__html:this.props.collectInfoText}}/> :null }
 				{!this.props.quizStarted && this.props.collectInfo ? <form className="emailForm" ><input type='text'value={this.props.value} onChange = {this.props.handleInfoChange} ></input></form> : null }
 			</div>
 		);
@@ -214,7 +209,7 @@ Quiz.defaultProps = {
 	// randomSortQuestions: false,
 	// randomSortAnswers: false,
 	preventUnanswered: false,
-	// disableScore: false,
+	disableScore: false,
 	disableRanking: false,
 	// scoreAsPercentage: false,
 	perQuestionResponseMessaging:false,
@@ -223,7 +218,7 @@ Quiz.defaultProps = {
 	// displayQuestionCount: true,   // Deprecate?
 	// displayQuestionNumber: true,  // Deprecate?
 	useScoreBuckets: true,
-	collectInfo: false,
+	collectInfo: true,
 	allowFreemail: false,
 	collectInfoText: '<p>Enter your Email address to get started.</p>',
 	// animationCallbacks: { // only for the methods that have jQuery animations offering callback
