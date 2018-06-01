@@ -197,7 +197,7 @@ Quiz.defaultProps = {
 	checkAnswerText:  'Check My Answer!',
 	nextQuestionText: 'Next &raquo;',
 	// backButtonText: '',
-	// completeQuizText: '',
+	completeQuizText: '',
 	// tryAgainText: '',
 	// questionCountText: 'Question %current of %total',
 	preventUnansweredText: 'You must select at least one answer.',

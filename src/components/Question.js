@@ -8,8 +8,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 class AnswerCardButton extends React.Component{
 
 	render(){
-		if(this.props.showResults){
-			return( <button className= "button" onClick = {this.props.onClick}>Show Results</button> );
+		if(this.props.showResults && (this.props.completeQuizText.length > 0) ){
+			return( <button className= "button" onClick = {this.props.onClick} dangerouslySetInnerHTML={{__html:this.props.completeQuizText}} />); 
 		}
 		return(
 			<button className= "button" 
@@ -28,14 +28,14 @@ class AnswerCard extends React.Component{
 				return(
 					<div>
 						<div dangerouslySetInnerHTML={{__html:this.props.question.correct}} />
-						<AnswerCardButton nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount) } />
+						<AnswerCardButton {...this.props} nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount) } />
 					</div>
 				);
 			}
 			return (
 				<div>	
 					<div dangerouslySetInnerHTML={{__html:this.props.question.incorrect}} />
-					<AnswerCardButton nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount)} />
+					<AnswerCardButton {...this.props} nextQuestionText={this.props.nextQuestionText} onClick = {this.props.nextQuestion} showResults={(this.props.currentQuestion +1 === this.props.questionCount)} />
 				</div>
 			);
 		}
@@ -46,8 +46,8 @@ class AnswerCard extends React.Component{
 class QuestionCardButton extends React.Component{
 	
 	render(){
-		if(this.props.showResults){
-			return( <button className= "button" onClick = {this.props.onClick}>Show Results</button> );
+		if(this.props.showResults && (this.props.completeQuizText.length > 0) ){
+			return( <button className= "button" onClick = {this.props.onClick} dangerouslySetInnerHTML={{__html:this.props.completeQuizText}} />); 
 		}
 		return(
 			<button className= "button" 
@@ -147,7 +147,7 @@ class QuestionCard extends React.Component{
 						</form>
 					</div>
 					<p>{(this.state.showPreventUnansweredText) ? this.props.preventUnansweredText : null }</p>
-					<QuestionCardButton onClick = {this.checkAnswer} checkAnswerText= {this.props.checkAnswerText} showResults={(this.props.currentQuestion +1 === this.props.questionCount)}/>
+					<QuestionCardButton {...this.props} onClick = {this.checkAnswer} checkAnswerText= {this.props.checkAnswerText} showResults={(this.props.currentQuestion +1 === this.props.questionCount)}/>
 				</div>
 
 			);
@@ -229,11 +229,20 @@ export default class Question extends React.Component{
 }
 
 
+// TODO : Merge buttons ? 
 AnswerCardButton.propTypes = {
 	showResults: PropTypes.bool,
 	onClick: PropTypes.func,
 	nextQuestionText: PropTypes.string,
-	nextQuestion: PropTypes.func
+	nextQuestion: PropTypes.func,
+	completeQuizText: PropTypes.string,
+};
+
+QuestionCardButton.propTypes = {
+	showResults: PropTypes.bool,
+	onClick: PropTypes.func,
+	checkAnswerText: PropTypes.string,
+	completeQuizText: PropTypes.string,
 };
 
 AnswerCard.propTypes = {
@@ -263,11 +272,7 @@ QuestionCard.propTypes = {
 	
 };
 
-QuestionCardButton.propTypes = {
-	showResults: PropTypes.bool,
-	onClick: PropTypes.func,
-	checkAnswerText: PropTypes.string
-};
+
 
 Question.propTypes = {
 	updateScore: PropTypes.func,
